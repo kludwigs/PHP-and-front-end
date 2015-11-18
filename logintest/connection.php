@@ -1,7 +1,7 @@
 <?php
 
 $dbUser = "root";
-$dbPass = "";
+$dbPass = "kpl321";
 $dbDatabase = "logintest_db";
 $dbHost = "localhost";
 $isConnectedvar = false;
