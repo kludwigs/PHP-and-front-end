@@ -1,217 +1,350 @@
 window.addEventListener("load", function()
 {
 	//alert("hello from javascript file");	
-	
+	sessionStorage.removeItem('mycustomercart');
 	//document.getElementById("create_table_button").addEventListener("click", buttonhandler);
-
-	ShowProducts();
-	
+	console.log("we loaded the index page!");
+	//location.href = "#top";
+	location.href = "#";
+	RemoveChildrenFromElement('message_box');
+	ShowProducts2();	
 });
 
-function ShowProducts()
+function ShowProducts2()
+{	
+	GetProductData();	
+}
+
+function GetProductData()
 {
-	mycontent = document.getElementById("insert_here");
+	var b=[];
+
+	$.getJSON('mydata.php', function(data) 
+	{		
+		GetProductDataCallBack(data);
+	});				
+}
+
+function GetProductDataCallBack(data)
+{
+	var a=[];
 	
-	var stuff = "<h3>Our Products</h3>";
-	var stuff = stuff.concat(GetHTMLProductList());
+	console.log("GetProductDataCallBack");
+		
+	WriteJsonDataToDiv(data);
 	
-	mycontent.innerHTML = stuff;			
+	var localData = JSON.stringify(data);
+	sessionStorage.setItem('myproductlist', localData);
+}
+
+function WriteJsonDataToDiv(data)
+{	
+	var i = 0;
+	// header for products //
+	var mytext = "<h3>Our Products</h3>";
+	$.each(data, function(key, val) 
+	{	
+		mytext = mytext.concat("<a href=#viewitem",i++,">Name:", val.name,"</a><br>");
+		mytext = mytext.concat("Category:", val.category, "<br>");
+		mytext = mytext.concat("Price:$", val.price, "<br>");
+		mytext = mytext.concat("<br>");
+	});			
+	console.log("WriteJsonDataToDiv");
+	document.getElementById("insert_here").innerHTML = mytext;			
+}
+
+function GetProductInfoFromSessionStorage()
+{
+	var data = JSON.parse(sessionStorage.getItem('myproductlist'));
+	console.log("Gotdata from session storage");
+	return data;
 }
 
 
 window.addEventListener("hashchange", function()
 {
-	var loc = window.location.hash;
-	
-	mycontent = document.getElementById("insert_here");
-	
-	var a = GetArrayOfProducts();
-	
-	console.log(loc);
-	
-	var mytext = "<a href='./index.html'>Back To Main</a><br>";
+	var loc = window.location.hash;	
+	console.log("haschange");					
+	console.log(loc);	
 
-	if(loc.indexOf('item')	!=-1)
-	{
-		if(loc.indexOf('viewitem1') != -1)
-		{		
-			mytext = mytext.concat("<strong>Name:", a[0].name,"</strong><br>");
-			mytext = mytext.concat("Price:$", a[0].price, "<br>");
-			mytext = mytext.concat("Description:", a[0].description, "<br>");
-			
-		}		
-		else if(loc.indexOf('viewitem2') != -1)
-		{		
-			mytext = mytext.concat("<strong>Name:", a[1].name,"</strong><br>");
-			mytext = mytext.concat("Price:$", a[1].price, "<br>");
-			mytext = mytext.concat("Description:", a[1].description, "<br>");		
-			
-		}	
-		else if(loc.indexOf('viewitem3') != -1)
-		{		
-			mytext = mytext.concat("<strong>Name:", a[2].name,"</strong><br>");
-			mytext = mytext.concat("Price:$", a[2].price, "<br>");
-			mytext = mytext.concat("Description:", a[2].description, "<br>");
-			
-		}	
-		var str = loc.replace("#", "");
-		console.log(str);
-		mytext = mytext.concat("<br><input type='button' id='",str,"' value='Add To Cart'></input>");
-		mytext = mytext.concat("Quantity:<select name='product_quantity' id='product_quantity'><option value=1>1</option><option value=2>2</option><option value=3>3</option></select>");
-		
-				
-		mycontent.innerHTML = mytext;	
-		
-		document.getElementById(str).addEventListener("click", AddToCartButton());
-	}	
-	else
-	{
-		ShowProducts();
-	}
+	SetVisibilityOfElement('view_cart', true);	
 	
+	if(loc.indexOf('viewitem') !=-1)
+	{		
+		var a = GetProductInfoFromSessionStorage();		
+		
+		if(a == null)
+		{
+			console.log("session storage is empty: returning");
+			return;
+		}		
+		var mytext = "<p><a href=#index>Back To Main</a></p>";		
+		
+		var dx = loc.replace( /^\D+/g, '');
+		console.log("viewitem:----", dx)
+				
+		if(a[dx] != undefined)
+		{
+				mytext = mytext.concat("<strong>Name:", a[dx].name,"</strong><br>");
+				mytext = mytext.concat("Price:$", a[dx].price, "<br>");
+				mytext = mytext.concat("Description:", a[dx].description, "<br>");		
+		}
+		else
+		{
+			console.log("Product not found in list");
+			return;
+		}				
+			
+		var mybutton = document.createElement("BUTTON");
+		mybutton.onclick = AddToCartButton;
+		
+		mybutton.id = dx;
+		mybutton.name = a[dx].name;
+		mybutton.innerHTML = "Add To Cart";
+
+		myselect = document.createElement("select");
+		myselect.id = "select_quantity";
+		
+		var numoptions = 4;
+		
+		for(var i=0; i<numoptions; i++)
+		{
+			var myoption = document.createElement("OPTION");
+			myoption.appendChild(document.createTextNode(i+1));	
+			myselect.appendChild(myoption);
+		}		
+		
+		var thediv = document.getElementById("insert_here");
+		
+		mytext = mytext.concat("<br>");
+						
+		thediv.innerHTML = mytext;
+		thediv.appendChild(mybutton);
+		thediv.appendChild(myselect);	
+
+		ClearElementInnerHTML("shopping_cart");
+		RemoveChildrenFromElement('message_box');
+	}
+	else if(loc.indexOf('view_cart') !=-1)
+	{	
+		ViewCustomerCart(false);
+	}
+	else if(loc.indexOf('empty_cart') !=-1)
+	{
+		EmptyCart();
+	}	
+	else if(loc.indexOf('index') != -1)
+	{
+		console.log("got the index page from hashchange function");	
+		var data = GetProductInfoFromSessionStorage();	
+		if(data != null)			
+			WriteJsonDataToDiv(data);		
+		else
+			console.log("data is null can't write products to page");
+		
+		ClearElementInnerHTML("shopping_cart");
+		RemoveChildrenFromElement('message_box');
+	}
+	else if(loc.indexOf('checkout') != -1)
+	{
+		SetVisibilityOfElement('view_cart', false);	
+		
+		var mytext = "<p><a href=#index>Continue Shopping</a></p>";	
+		document.getElementById('insert_here').innerHTML = mytext;
+				
+		RemoveChildrenFromElement('message_box');
+		ViewCustomerCart(true);		
+	}
 });
 
 
-function AddToCartButton()
-{
-	console.log("you bought shit");
 
+function EmptyCart()
+{
+	DeleteCustomerCartFromStorage();
+	RemoveChildrenFromElement('message_box');
+	ViewCustomerCart(false);
+}
+function DeleteCustomerCartFromStorage()
+{
+	sessionStorage.removeItem("mycustomercart");
 }
 
-
-function buttonhandler() {
+function ViewCustomerCart(total)
+{
+	var mytext;
+	if(!total)	
+		mytext = "<h3>Shopping Cart</h3>";	
+	else
+		mytext = "<h3>Check Out</h3>";
+		
+	var totalcost = 0;
+		
 	
-	myelement = document.getElementById("message_box");
+	var myDiv = document.getElementById("shopping_cart");
+		
 	
-	if (myelement.innerHTML == "Hello World")
+	var data = GetCustomerCartFromSessionStorage();
+	if (data == null)
 	{
-		myelement.innerHTML = "Hello";
+		console.log("data was null");
+		mytext = mytext.concat("<p>Your Cart is Empty<p>");
+		myDiv.innerHTML = mytext;
+		
 	}
 	else
-		myelement.innerHTML = "Hello World";
-		
-	mycontent = document.getElementById("insert_here");
-	
-	var stuff = InitializeObjects();
-	
-	mycontent.appendChild(stuff);
-}
-
-var Product = function(name, category, price, description)
-{
-	this.name = name;
-	this.category = category;
-	this.price = price;
-	this.description = description;
-}
-
-function GetHTMLProductList()
-{
-	var a = GetArrayOfProducts();
-	
-	var mytext = "";
-	
-	for (var i = 0; i < a.length; i++)
 	{
-		mytext = mytext.concat("<a href=#viewitem",i+1,">Name:", a[i].name,"</a><br>");
-		mytext = mytext.concat("Category:", a[i].category, "<br>");
-		mytext = mytext.concat("Price:$", a[i].price, "<br>");
-		mytext = mytext.concat("<br>");
+		var mytable = document.createElement("TABLE");
+		mytable.border = '1';
+		
+		var tableBody = document.createElement('TBODY');
+		mytable.appendChild(tableBody);
+				
+		var tr = document.createElement('TR');
+			
+		tableBody.appendChild(tr);
+		
+		var headers = ["Name", "Category", "Price", "Quantity"];
+		
+		for(var i = 0; i<headers.length; i++)
+		{
+			var th = document.createElement('TH');
+			th.appendChild(document.createTextNode(headers[i]));
+			tr.appendChild(th);
+		}					
+				
+		$.each(data, function(key, val) 
+		{				
+			var tr = document.createElement('TR');
+			
+			tableBody.appendChild(tr);
+			
+			var td = document.createElement('TD');
+			td.appendChild(document.createTextNode(val.name));
+			td.setAttribute("class", "long-column");
+			tr.appendChild(td);
+			
+			var a = FindAndReturnFromSessionStorage(val.id);
+			
+			if(a!=null)
+			{
+				td = document.createElement('TD');
+				td.appendChild(document.createTextNode(a.category));
+				td.setAttribute("class", "long-column");					
+				tr.appendChild(td);
+
+				td = document.createElement('TD');
+				td.appendChild(document.createTextNode("$" + a.price));
+				td.setAttribute("class", "short-column");				
+				tr.appendChild(td);
+				
+				
+				totalcost += parseInt(a.price)*(val.quantity);
+				console.log("totalcost =", totalcost);
+			}			
+			td = document.createElement('TD');
+			td.appendChild(document.createTextNode(val.quantity));
+			td.setAttribute("class", "short-column");				
+			tr.appendChild(td);	
+			
+			
+		});		
+		console.log("totalcost =", totalcost);
+		myDiv.innerHTML = mytext;
+		myDiv.appendChild(mytable);		
+	
+		if(total)
+		{
+			CreateShoppingCartTotalFooter(myDiv, totalcost);			
+		}
+		else
+			CreateShoppingCartNavLinks(myDiv);	
 	}	
-	return mytext;
+
 }
 
 
-function GetArrayOfProducts()
+function GetCustomerCartFromSessionStorage()
 {
-	var product1 = new Product("Lucky Jeans", "Pants", 100, "Really Comfortable Jeans");
-	var product2 = new Product("Nord Fire 3", "Musical Instruments", 2200, "B3 Organ simulator with Leslie Simulation.");
-	var product3 = new Product("Callaway Driver", "Golf", 200, "Driver designed to hit long!");	
-
-	var a=[];
+	console.log("GetCustomerCartFromSessionStorage call");
 	
-	a.push(product1);
-	a.push(product2);
-	a.push(product3);
-	
-	return a;
-}
-function Product(name, category, price, description)
-{
-	this.name = name;
-	this.category = category;
-	this.price = price;
-	this.description = description;	
-}
-
-function InitializeObjects()
-{
-	var product1 = new Product("Lucky Jeans", "Pants", 200, "Really Comfortable Jeans");
-	var product2 = new Product("Nord Fire 3", "Musical Instruments", 2200, "B3 Organ simulator with Leslie Simulation.");
-	var product3 = new Product("Callaway Driver", "Golf", 200, "Driver designed to hit long!");	
-
-	var a=[];
-	
-	a.push(product1);
-	a.push(product2);
-	a.push(product3);
-		
-	var mytable = document.createElement('table');
-	
-	var tr1 = document.createElement('tr');
-	
-	var th1 = document.createElement('th');
-	var th2 = document.createElement('th');
-	var th3 = document.createElement('th');
-	var th4 = document.createElement('th');	
-	
-	var header1 = document.createTextNode("Name");
-	var header2 = document.createTextNode("Category");
-	var header3 = document.createTextNode("Price");
-	var header4 = document.createTextNode("Description");
-	
-	th1.appendChild(header1);
-	th2.appendChild(header2);
-	th3.appendChild(header3);
-	th4.appendChild(header4);
-	
-	tr1.appendChild(th1);
-	tr1.appendChild(th2);
-	tr1.appendChild(th3);
-	tr1.appendChild(th4);
-		
-	mytable.appendChild(tr1);
-	
-	for(var i = 0; i<a.length; i++)
+	if(sessionStorage.getItem('mycustomercart') == null)
 	{
-		var tr1 = document.createElement('tr');
-		
-		var td1 = document.createElement('td');
-		var td2 = document.createElement('td');
-		var td3 = document.createElement('td');
-		var td4 = document.createElement('td');
-		
-		var text1 = document.createTextNode(a[i].name);
-		var text2 = document.createTextNode(a[i].category);
-		var text3 = document.createTextNode("$" + a[i].price);
-		var text4 = document.createTextNode(a[i].description);
-		
-		td1.appendChild(text1);
-		td2.appendChild(text2);
-		td3.appendChild(text3);
-		td4.appendChild(text4);
+		console.log("mycustomercart is null;");
+		return null;		
+	}	
+	var data = JSON.parse(sessionStorage.getItem('mycustomercart'));
+	console.log("Got customer cart from session storage");
+	return data;
+}
 
-		tr1.appendChild(td1);
-		tr1.appendChild(td2);
-		tr1.appendChild(td3);
-		tr1.appendChild(td4);
-		
-		mytable.appendChild(tr1);
-	}
-	document.body.appendChild(mytable);
-
-	mytable["class"] =  "mytable";
-	mytable["id"] =  "mytable";
+function AddToCartButton()
+{
+	var currentINNERHTML = this.innerHTML;
+	var productid = this.id;
+	var productname = this.name;
 	
-	return mytable;
+	var quantity = document.getElementById("select_quantity").value;
+
+	console.log("callerbutton:", currentINNERHTML, productname, ":", productid, " -- quantity selected:", quantity);
+
+	AddItemToShoppingCartSessionStorage(productid, productname, quantity);
+	
+	// change url to signify event //
+	location.href = "#addtocart";
+}
+
+function AddItemToShoppingCartSessionStorage(productid, productname, quantity)
+{
+	var data;
+	var cartdata = GetCustomerCartFromSessionStorage();	
+	
+	myDiv = document.getElementById('insert_here');
+	
+	console.log(" AddItemTo -- quantity:", quantity);
+	
+	if(cartdata != null)
+	{
+		console.log("adding to cart");
+			
+		if(DoesItemExistInCart(cartdata, productid) == true)
+		{
+			console.log("Item Already Exists In Cart");
+			WriteToMessageBox("message_box", "Item already in cart!");
+			return;
+		}
+			
+		cartdata.push(				
+			{ "name": productname, "id": productid, "quantity" : quantity}
+		);	
+		data = cartdata;
+		
+		console.log(JSON.stringify(data));
+		
+	}
+	else if(cartdata == null)
+	{
+		
+		var newdata = [{ "name": productname, "id": productid, "quantity" : quantity}];
+		console.log(newdata);
+		data = newdata;			
+	}			
+	var localData = JSON.stringify(data);		
+	sessionStorage.setItem('mycustomercart', localData);
+	
+	var mytext = "Added " + productname + " to cart!";
+	WriteToMessageBox("message_box", mytext);
+	
+	// added item let's refresh cart //
+	ViewCustomerCart();
+}
+
+function FindAndReturnFromSessionStorage(index)
+{
+	var b = GetProductInfoFromSessionStorage();
+
+	if(b[index] != null)
+	{
+		return b[index];
+	}
 }

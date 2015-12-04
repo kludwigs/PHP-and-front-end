@@ -2,22 +2,57 @@
 <html>
 	<head>
 		<title>WebMart - Shop til you drop!</title>
-		<link rel='stylesheet' type='text/css' href='./mystyles.css' />		
-	<script src="myjavascript.js">
-	</script>
+		<link rel='stylesheet' type='text/css' href='./mystyles.css' />	
+		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'>
+		</script>	
+		<script src="myjavascript.js">
+		</script>
+		<script src="utility.js">
+		</script>		
+		<script>
+		$(document).ready(function(){
+		
+			$("#view_cart_click").click(function()
+			{
+				console.log("yay");
+                /* call the php that has the php array which is json_encoded */
+					$.getJSON("json_encoded_array.php", function(result)
+					{
+						$.each(result, function(i, field)
+						{
+							$("#shopping_cart").append(field + " ");
+						});
+					});
+
+			});		
+		});
+		</script>
 	</head>
 	<body>
 		<div id='container'>
 			<div id='header'>
 				<h2 style='text-align:center;'>Welcome to Web Mart!</h2>
-					<p style='text-align:center;'><a href='./index.php?view_cart=1'>View Cart</a></p>
+					
+					
+					<p id='view_cart' style='text-align:center;'><a href='#view_cart'>View Cart</a></p>
+					<!-- javascript:get_data();  #view_cart'  
+					
+					<p style='text-align:center;'><a href='javascript:get_data();'>View Cart</a></p> 
+					
+					<p style='text-align:center;' id='view_cart_click'>View Cart</p>
+					-->
 			</div>
 			<div id='content'>
-				<div id='message_box'>
 				<br>
-				</div>
 				<div id='insert_here'>
-				<br>
+					<br>
+				</div>			
+				<div id='message_box'>
+				
+				</div>
+				<div id='shopping_cart'>
+					<br>
+				</div>
 				<!--</div><input type="button" id="create_table_button" value="PushMe"></input>-->
 			</div><!-- End content-->
 			

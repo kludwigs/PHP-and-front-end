@@ -33,18 +33,21 @@ body {
 table, tr , td, th{
 	/*border:2px solid #303030;	*/
     border:'1';
-	border-collapse: collapse;
+	border-collapse: separate;
 	text-align:left;
-	padding: 10px;
+	padding: 1px;
 }
 
 .short-column{
-	width:70px;
-	
+	width:70px;	
 }
+.long-column{
+	width:150px;	
+}
+
 #message_box{
 	color:#801000;
-	font-weight:bold;
+	font-style: italic;
 }
 #header {
 	background-color:#64af9c;
@@ -68,8 +71,13 @@ table, tr , td, th{
 	margin-right:10px;	
     width: 1300px;	
 }
-
-
+#view_cart_click:visited{
+	color:#801000;
+	font-weight:bold;
+}
+#view_cart_click:hover{
+	color:#fde500;
+}
 a, a:visited {
 	color:#801000;
 	font-weight:bold;
