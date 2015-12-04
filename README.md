@@ -1,2 +1,1 @@
-# PHPPractice
-mix of various exercises, examples and demos
+Mix of various exercises, examples and demos. Utilizing ajax, php, javascript and jquery
