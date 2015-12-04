@@ -2,6 +2,6 @@ Improvements on the old onlineshop
 
 features include: 
   1. php use for back end only
-  2. data base queries made with one singular async json call
+  2. data base query made with one singular async json call
   3. hash events to help update elements on the page instead of navigating to a new one
   4. use of html5 session storage
