@@ -9,24 +9,6 @@
 		</script>
 		<script src="utility.js">
 		</script>		
-		<script>
-		$(document).ready(function(){
-		
-			$("#view_cart_click").click(function()
-			{
-				console.log("yay");
-                /* call the php that has the php array which is json_encoded */
-					$.getJSON("json_encoded_array.php", function(result)
-					{
-						$.each(result, function(i, field)
-						{
-							$("#shopping_cart").append(field + " ");
-						});
-					});
-
-			});		
-		});
-		</script>
 	</head>
 	<body>
 		<div id='container'>
