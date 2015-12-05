@@ -21,7 +21,13 @@ $myproducts = array(
 			'category' => "Musical Instruments",
 			'price' => 2500.00,
 			'description' => "Nords new B3 Organ simulator! Reach new heights!" 
-		)
+		),
+		array(
+			'name' => "Zone Monitor Speakers",
+			'category' => "Electronics",
+			'price' => 500.00,
+			'description' => "Great quality sounding speakers. Turn them up for your next party!" 
+		)		
 );
 echo json_encode($myproducts);
 
