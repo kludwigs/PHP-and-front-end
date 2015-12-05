@@ -1,11 +1,14 @@
-html, body {
+html{
 	height: 100%;
 	width: 100%;
 	margin: 0;
 	padding: 0;
-}
+} 
 
 body {
+	height: 85%;
+	width: 100%;
+	margin: 0;	
 	
 /*	background-image: url("https://upload.wikimedia.org/wikipedia/commons/d/d7/Confetti_(5879576562).jpg");*/
 	
@@ -15,20 +18,23 @@ body {
 }
 
 #container {
-	background-color: #cecece;
+	/*background-color: #cecece;*/
+	background-image: url("http://www.franklinmedicalcentre.com/wp-content/uploads/Grey-Background-106.jpg");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;	
 	
-	border-left:2px solid #303030;
-	border-right:2px solid #303030;
+	border-left:4px solid #303030;
+	border-right:4px solid #303030;
+	border-bottom:4x solid #303030;
 	
-	width:1300px;
-	min-height:80%;
+	width:80%;
+	min-height:100%;
 	
 	margin-left:auto;
 	margin-right:auto;
 	
 	padding:0px;
 }
-
 
 table, tr , td, th{
 	/*border:2px solid #303030;	*/
@@ -50,7 +56,12 @@ table, tr , td, th{
 	font-style: italic;
 }
 #header {
-	background-color:#64af9c;
+	/*background-image: url("http://il2.picdn.net/shutterstock/videos/5345468/thumb/1.jpg?i10c=img.resize(height:160)");*/
+	background-image: url("http://www.franklinmedicalcentre.com/wp-content/uploads/Grey-Background-106.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat; 
+	
+	/*background-color:#64af9c;*/
 	border-bottom:1px solid #303030;
 	padding-top:5px;
 }
@@ -65,10 +76,10 @@ table, tr , td, th{
 	color:#101010;
 }
 
-#content {
-	padding:5px;    
-	margin-left:10px;
-	margin-right:10px;	
+#content {	
+	padding:0px;    
+	margin-left:30px;
+	margin-right:-5px;	
     width: 1300px;	
 }
 #view_cart_click:visited{
