@@ -1,7 +1,7 @@
 window.addEventListener("load", function()
 {
 	//alert("hello from javascript file");	
-	sessionStorage.removeItem('mycustomercart');
+	//sessionStorage.removeItem('mycustomercart');
 	//document.getElementById("create_table_button").addEventListener("click", buttonhandler);
 	console.log("we loaded the index page!");
 	//location.href = "#top";
