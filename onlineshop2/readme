@@ -5,3 +5,4 @@ features include:
   2. data base query made with one singular async json call
   3. hash events to help update elements on the page instead of navigating to a new one
   4. use of html5 session storage
+  5. fancier css (done manually no use of css layout helper such as bootstrap 
