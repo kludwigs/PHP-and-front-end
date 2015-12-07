@@ -1,0 +1,24 @@
+#content{
+	border-style: solid;
+	max-width:90
+	%;
+	margin-left:3%;
+	margin-right:13%;
+	padding-top:1%;
+	height: auto;
+	width: auto;
+}
+
+#rssOutput
+{	
+	/* we don't have control of image size but make the
+	   the max width small so the imgur addresses wordwrap
+	  
+	*/
+	max-width: 10%;	
+	display:inline-block;
+}
+#img{
+	
+font:bold;
+}

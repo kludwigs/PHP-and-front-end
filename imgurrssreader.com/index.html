@@ -1,0 +1,70 @@
+<html>
+<head>
+<link rel='stylesheet' type='text/css' href='./mystyles.css' />	
+
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+	
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>	
+<script>
+function showRSS(str) 
+{
+	console.log("showRSS str=",str);
+
+  if (str.length==0 || str.indexOf('imgur') != -1) 
+  { 
+    document.getElementById("rssOutput").innerHTML="";
+    return;
+  }
+  if (window.XMLHttpRequest) 
+  {
+    // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  } 
+  else 
+  {  // code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function() 
+  {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) 
+	{
+      document.getElementById("rssOutput").innerHTML=xmlhttp.responseText;
+    }
+  }
+  xmlhttp.open("GET","getrss.php?q="+str,true);
+  xmlhttp.send(null);
+}
+$( document ).ready(function() 
+	{
+		console.log('ready function started');
+	
+		$.getJSON("selectoptions.json", function(data) 
+		{	
+			var d = data['rssfeeds'];
+			console.log("d[0].feed", d[0].feed);
+			
+			$.each(d, function(key, val) 
+			{	
+				$('#selectfeed')
+					.append($("<option></option>")
+					.attr("value",val.feed)
+					.text(val.feed));
+			});								
+		});		 
+	}
+);
+</script>
+</head>
+<body>
+<div id="content">
+	<form>
+		<select onchange="showRSS(this.value)" id="selectfeed">
+		<option value="Select an imgur RSS-feed:">Select an imgur RSS-feed:</option>
+		</select>
+	</form>
+	<div id="rssOutput">RSS-feed will be listed here...</div>
+</div>
+</body>
+</html>
