@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Nord Fire 3",
+    "category": "Musical Instruments",
+    "price":2400,
+    "description": "Organ B3 simulator."
+  },
+  {
+    "name": "Lucky Jeans",
+    "category": "Pants",
+    "price":2400,
+    "description": "Comfortable jeans."
+  }
+]

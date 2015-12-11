@@ -1,0 +1,7 @@
+<h2>Our Prouducts</h2>
+
+<ul>
+  <li ng-repeat="product in products">
+    <a href="#/{{product.name | encodeURI}}">{{product.name}}</a>
+  </li>
+</ul>

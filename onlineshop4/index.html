@@ -1,0 +1,123 @@
+<html ng-app="productApp">
+  <head>
+    <meta charset="utf-8">
+	<title>WebMart - Shop til you drop!</title>
+	<link rel='stylesheet' type='text/css' href='./mystyles.css' />	
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+    <script>
+      var productApp = angular.module('productApp', ['ngRoute']);
+
+      productApp.config(function($routeProvider) {
+        $routeProvider.
+          when('/', {
+            templateUrl: 'product-list.html',
+            controller: 'ProductListCtrl'
+          }).
+          when('/:productName', {
+            templateUrl: 'product-detail.html',
+            controller: 'ProductDetailCtrl'
+          }).
+          otherwise({
+            redirectTo: '/'
+          });
+      });
+
+      productApp.factory('products', function($http){
+
+	    /*
+        function getData(callback){
+          $http({
+            method: 'GET',
+            url: 'products.json',
+            cache: true
+          }).success(callback);
+        }
+	    */
+		
+        function getData(callback)
+		{
+			//var senddata = {"servicecode": "foo","passkey": "bar"};
+			var data = 'securitycode=foo&passkey=bar';
+			$http
+			({
+				method: "post",
+				url: './data_service.php',
+				/* data variable contains our post variables that our parsed by our service*/
+				data: data,
+				cached: true,
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+			}).success(callback);
+			/*
+			.success(function(data)
+			{
+			
+				console.log("success");
+				console.log("success getting data ", data['data']);
+				return data.data;
+			});
+			*/
+        }	
+		
+        return {
+          list: getData,
+          find: function(name, callback)
+		  {
+            getData(function(data) 
+			{
+				var data1 = data.data;
+				//console.log("callback getting data ", data['data']);
+				var product = data1.filter(function(entry)
+				{
+					return entry.name === name;
+				})[0];
+				
+              callback(product);
+            });
+          }
+        };
+      });
+
+      productApp.controller('ProductListCtrl', function ($scope, products){
+        products.list(function(products) 
+		{
+		
+		  //console.log("product list", products);
+          $scope.products = products.data;
+        });
+      });
+
+      productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products){
+        products.find($routeParams.productName, function(product) 
+		{
+		  //console.log("product detail controller ", product);
+          $scope.product = product;
+        });
+      });
+
+      productApp.filter('encodeURI', function(){
+        return window.encodeURI;
+      });
+    </script>
+  </head>
+	<body>
+		<div id='container'>
+			<div id='header'>
+				<h2 style='text-align:center;'>Welcome to Web Mart!</h2>										
+					<p id='view_cart' style='text-align:center;'><a href='#view_cart'>View Cart</a></p>
+			</div>
+			<div id='content'>
+				<br>
+				<div id='insert_here'>
+					<div ng-view></div>
+				</div>			
+				<div id='message_box'>
+				
+				</div>
+				<div id='shopping_cart'>
+					<br>
+				</div>
+			</div> <!-- End content-->			
+		</div><!-- End container-->		
+	</body>
+</html>
