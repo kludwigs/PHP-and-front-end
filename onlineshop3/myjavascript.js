@@ -62,7 +62,7 @@ function WriteJsonDataToDiv(data)
 		mytext = mytext.concat("<br>");
 	});			
 	console.log("WriteJsonDataToDiv");
-	document.getElementById("insert_here").innerHTML = mytext;			
+	$("#insert_here").html( mytext);			
 }
 
 function GetProductInfoFromSessionStorage()
@@ -125,9 +125,8 @@ window.addEventListener("hashchange", function()
 			myoption.appendChild(document.createTextNode(i+1));	
 			myselect.appendChild(myoption);
 		}		
-		
-		var thediv = document.getElementById("insert_here");
-		
+				
+		var thediv = $('#insert_here')[0];
 		mytext = mytext.concat("<br>");
 						
 		thediv.innerHTML = mytext;
@@ -161,8 +160,8 @@ window.addEventListener("hashchange", function()
 	{
 		SetVisibilityOfElement('view_cart', false);	
 		
-		var mytext = "<p><a href=#index>Continue Shopping</a></p>";	
-		document.getElementById('insert_here').innerHTML = mytext;
+		var mytext = "<p><a href=#index>Continue Shopping</a></p>";			
+		$('#insert_here').html(mytext);
 				
 		RemoveChildrenFromElement('message_box');
 		ViewCustomerCart(true);		
@@ -193,9 +192,8 @@ function ViewCustomerCart(total)
 	var totalcost = 0;
 		
 	
-	var myDiv = document.getElementById("shopping_cart");
-		
-	
+	var myDiv = $("#shopping_cart")[0];
+			
 	var data = GetCustomerCartFromSessionStorage();
 	if (data == null)
 	{
@@ -274,7 +272,6 @@ function ViewCustomerCart(total)
 	}	
 
 }
-
 
 function GetCustomerCartFromSessionStorage()
 {
