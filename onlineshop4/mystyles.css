@@ -58,6 +58,11 @@ table, tr , td, th{
 	color:#801000;
 	font-style: italic;
 }
+.messagetext{
+	color:#801000;
+	font-style: italic;	
+	font-weight: bold;
+}
 #header {
 	/*background-image: url("http://il2.picdn.net/shutterstock/videos/5345468/thumb/1.jpg?i10c=img.resize(height:160)");*/
 	/*background-image: url("http://www.franklinmedicalcentre.com/wp-content/uploads/Grey-Background-106.jpg");*/

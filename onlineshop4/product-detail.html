@@ -6,3 +6,29 @@
   <li>Price: {{product.price | currency}}</li>
   <li>Description: {{product.description}}</li>
 </ul>
+<button ng-click="addToCart(myselect)">Add to Cart</button>  
+<select 
+	ng-init="myselect=options[0]"
+	ng-model="myselect" 
+	ng-options="o as o for o in options">
+</select>
+<span class="messagetext">{{itemmessage}}</span>
+
+<h2 ng-hide="!shoppingcart.length"> Shopping Cart</h2></h2>
+
+<table ng-hide="!shoppingcart.length">
+	<tr>
+		<th>Product</th>
+		<th>Quantity</th>
+	<tr>
+	</tr>
+	<tr ng-repeat="item in shoppingcart">
+		<td>{{item.product}}</td>
+		<td>
+			<input type="text" name="quantity" ng-model="item.quantity">
+			<a href="" ng-click="removeFromCart(item)">Remove</a>
+		</td>
+	</tr>	
+</tr>
+
+<table>

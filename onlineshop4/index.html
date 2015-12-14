@@ -22,8 +22,13 @@
             redirectTo: '/'
           });
       });
-
-      productApp.factory('products', function($http){
+	productApp.factory('shoppingcart', function () {
+		return [];		
+	});
+	  
+	  
+	productApp.factory('products', function($http)
+	  {
 
 	    /*
         function getData(callback){
@@ -35,8 +40,8 @@
         }
 	    */
 		
-        function getData(callback)
-		{
+		function getData(callback)
+		{	
 			//var senddata = {"servicecode": "foo","passkey": "bar"};
 			var data = 'securitycode=foo&passkey=bar';
 			$http
@@ -48,15 +53,15 @@
 				cached: true,
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 			}).success(callback);
-			/*
-			.success(function(data)
-			{
-			
-				console.log("success");
-				console.log("success getting data ", data['data']);
-				return data.data;
-			});
-			*/
+				/*
+				.success(function(data)
+				{
+				
+					console.log("success");
+					console.log("success getting data ", data['data']);
+					return data.data;
+				});
+				*/
         }	
 		
         return {
@@ -78,21 +83,54 @@
         };
       });
 
-      productApp.controller('ProductListCtrl', function ($scope, products){
-        products.list(function(products) 
+		productApp.controller('ProductListCtrl', function ($scope, products, shoppingcart)
 		{
-		
-		  //console.log("product list", products);
-          $scope.products = products.data;
-        });
-      });
+			products.list(function(products) 
+			{
+			
+			//console.log("product list", products);
+				$scope.products = products.data;
+			  
+			});
+			$scope.shoppingcart = shoppingcart;
+		  });
 
-      productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products){
+      productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products, shoppingcart)
+	  {
         products.find($routeParams.productName, function(product) 
 		{
 		  //console.log("product detail controller ", product);
           $scope.product = product;
         });
+		$scope.options = [1, 2, 3, 4, 5];
+		$scope.shoppingcart = shoppingcart;
+		$scope.itemmessage = "";
+		
+		$scope.addToCart = function(myval)
+		{			
+			//console.log("addToCart " + $scope.product.name );
+			
+			for(var i = 0; i<shoppingcart.length;i++)
+			{
+				//console.log("shoppingcart[",i,"].product " + shoppingcart[i].product);
+				
+				if(shoppingcart[i].product == $scope.product.name)
+				{
+					//console.log("Item Already in Cart");
+					$scope.itemmessage = "Item Already in Cart!";
+					return;
+				}
+			}			
+			shoppingcart.push({"product":$scope.product.name,"quantity":myval});
+			$scope.itemmessage = "Item Added to Cart";
+		}
+		$scope.removeFromCart = function(myitem)
+		{			
+			var index = shoppingcart.indexOf(myitem);
+			console.log("removing from", index ," index in cart");
+			shoppingcart.splice(index, 1);  
+			$scope.itemmessage = "";			
+		}		
       });
 
       productApp.filter('encodeURI', function(){
@@ -117,7 +155,9 @@
 				<div id='shopping_cart'>
 					<br>
 				</div>
-			</div> <!-- End content-->			
+			<footer ng-include="'footer.html'"></footer> 
+			</div> <!-- End content-->	
+			
 		</div><!-- End container-->		
 	</body>
 </html>
