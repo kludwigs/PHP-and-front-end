@@ -93,6 +93,13 @@
 			  
 			});
 			$scope.shoppingcart = shoppingcart;
+			$scope.removeFromCart = function(myitem)
+			{			
+				var index = shoppingcart.indexOf(myitem);
+				console.log("removing from", index ," index in cart");
+				shoppingcart.splice(index, 1);  
+				$scope.itemmessage = "";			
+			}				
 		  });
 
       productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products, shoppingcart)
