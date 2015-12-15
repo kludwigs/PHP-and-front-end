@@ -14,16 +14,20 @@
 </select>
 <span class="messagetext">{{itemmessage}}</span>
 
-<h2 ng-hide="!shoppingcart.length"> Shopping Cart</h2></h2>
+<h3 class="shopingcartheader" ng-hide="!shoppingcart.length"> Shopping Cart</h3>
 
 <table ng-hide="!shoppingcart.length">
 	<tr>
-		<th>Product</th>
+		<th class="long-column">Product</th>
+		<th class="short-column">Category</th>
+		<th class="short-column">Price</th>
 		<th>Quantity</th>
 	<tr>
 	</tr>
 	<tr ng-repeat="item in shoppingcart">
 		<td>{{item.product}}</td>
+		<td>{{item.category}}</td>
+		<td>{{item.price | currency}}</td>
 		<td>
 			<input type="text" name="quantity" ng-model="item.quantity">
 			<a href="" ng-click="removeFromCart(item)">Remove</a>
@@ -31,4 +35,5 @@
 	</tr>	
 </tr>
 
-<table>
+</table>
+

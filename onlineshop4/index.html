@@ -10,26 +10,35 @@
 
       productApp.config(function($routeProvider) {
         $routeProvider.
-          when('/', {
+          when('/', 
+		  {
             templateUrl: 'product-list.html',
             controller: 'ProductListCtrl'
           }).
-          when('/:productName', {
+          when('/view_cart', 
+		  {
+            templateUrl: 'view_cart.html',
+            controller: 'ProductDetailCtrl'
+          }).		  
+          when('/:productName', 
+		  {
             templateUrl: 'product-detail.html',
             controller: 'ProductDetailCtrl'
-          }).
+          }).		  
           otherwise({
             redirectTo: '/'
           });
       });
-	productApp.factory('shoppingcart', function () {
+	  
+	
+	productApp.factory('shoppingcart', function () 
+	{	
 		return [];		
+				
 	});
-	  
-	  
+	  	  
 	productApp.factory('products', function($http)
-	  {
-
+	{
 	    /*
         function getData(callback){
           $http({
@@ -92,14 +101,17 @@
 				$scope.products = products.data;
 			  
 			});
+			
 			$scope.shoppingcart = shoppingcart;
+			/*
 			$scope.removeFromCart = function(myitem)
 			{			
 				var index = shoppingcart.indexOf(myitem);
 				console.log("removing from", index ," index in cart");
 				shoppingcart.splice(index, 1);  
 				$scope.itemmessage = "";			
-			}				
+			}	
+			*/
 		  });
 
       productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products, shoppingcart)
@@ -110,16 +122,32 @@
           $scope.product = product;
         });
 		$scope.options = [1, 2, 3, 4, 5];
-		$scope.shoppingcart = shoppingcart;
+		$scope.shoppingcart = shoppingcart;		
+		//$scope.shoppingcart_localstorage = shoppingcart_localstorage.get();
+					
 		$scope.itemmessage = "";
-		
+				
+		$scope.$watch('shoppingcart', function(shoppingcart) 
+		{
+			console.log( "Shopping cart is being watched" );
+			/*
+			if(shopping_cart == null)
+			{
+				console.log("shopping cart is null");				
+			}
+			sessionstorage['shoppingcart'] = $shopping_cart;
+			
+			return;
+			*/
+		},true);		
+				
 		$scope.addToCart = function(myval)
 		{			
-			//console.log("addToCart " + $scope.product.name );
+			console.log("addToCart " + $scope.product.name );
 			
 			for(var i = 0; i<shoppingcart.length;i++)
 			{
-				//console.log("shoppingcart[",i,"].product " + shoppingcart[i].product);
+				console.log("shoppingcart[",i,"].product " + shoppingcart[i].product);
 				
 				if(shoppingcart[i].product == $scope.product.name)
 				{
@@ -128,19 +156,34 @@
 					return;
 				}
 			}			
-			shoppingcart.push({"product":$scope.product.name,"quantity":myval});
+			shoppingcart.push(			
+			{
+				"product":$scope.product.name, 
+				"category":$scope.product.category, 
+				"price":$scope.product.price, 
+				"quantity":myval}
+			);
+			
+			
+			//shoppingcart_localstorage.set($scope.product, myval);			
+			
+			//console.log("add item to cart", product);
+			//shoppingcart.set(product, myval);
+			
 			$scope.itemmessage = "Item Added to Cart";
 		}
+		
 		$scope.removeFromCart = function(myitem)
 		{			
 			var index = shoppingcart.indexOf(myitem);
 			console.log("removing from", index ," index in cart");
 			shoppingcart.splice(index, 1);  
 			$scope.itemmessage = "";			
-		}		
+		}			
       });
 
-      productApp.filter('encodeURI', function(){
+      productApp.filter('encodeURI', function()
+	  {
         return window.encodeURI;
       });
     </script>
@@ -149,7 +192,7 @@
 		<div id='container'>
 			<div id='header'>
 				<h2 style='text-align:center;'>Welcome to Web Mart!</h2>										
-					<p id='view_cart' style='text-align:center;'><a href='#view_cart'>View Cart</a></p>
+					<p id='view_cart' style='text-align:center;'><a href='#/view_cart'>View Cart</a></p>
 			</div>
 			<div id='content'>
 				<br>

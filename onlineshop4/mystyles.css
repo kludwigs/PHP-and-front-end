@@ -39,31 +39,43 @@ body {
 	padding:0px;
 }
 
-table, tr , td, th{
-	/*border:2px solid #303030;	*/
-    border:'1';
-	border-collapse: separate;
+table, tr , td, th
+{
+	border:1px solid #303030;
+
+	/*border-collapse: separate;*/
 	text-align:left;
 	padding: 1px;
 }
 
-.short-column{
-	width:70px;	
+.short-column
+{
+	width:100px;	
 }
-.long-column{
+.long-column
+{
 	width:150px;	
 }
 
-#message_box{
+#message_box
+{
 	color:#801000;
 	font-style: italic;
 }
-.messagetext{
+.messagetext
+{
 	color:#801000;
 	font-style: italic;	
 	font-weight: bold;
 }
-#header {
+.shopingcartheader
+{
+	padding:0;
+	margin-bottom: 0;
+}
+
+#header
+{
 	/*background-image: url("http://il2.picdn.net/shutterstock/videos/5345468/thumb/1.jpg?i10c=img.resize(height:160)");*/
 	/*background-image: url("http://www.franklinmedicalcentre.com/wp-content/uploads/Grey-Background-106.jpg");*/
 	background-image: url("https://expertmediatraining.com/wp-content/uploads/2015/10/greenish-background-Zoom-slide-900x375.jpg");
@@ -85,23 +97,28 @@ table, tr , td, th{
 	color:#101010;
 }
 
-#content {	
+#content
+{	
 	padding:0px;    
 	margin-left:30px;
 	margin-right:-5px;	
     width: 1300px;	
 }
-#view_cart_click:visited{
+#view_cart_click:visited
+{
 	color:#801000;
 	font-weight:bold;
 }
-#view_cart_click:hover{
+#view_cart_click:hover
+{
 	color:#fde500;
 }
-a, a:visited {
+a, a:visited
+{
 	color:#801000;
 	font-weight:bold;
 }
-a:hover {
+a:hover 
+{
 	color:#fde500;
 }
