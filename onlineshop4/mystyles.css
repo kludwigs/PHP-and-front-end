@@ -74,6 +74,11 @@ table, tr , td, th
 	margin-bottom: 0;
 }
 
+.checkoutheader
+{
+	padding:0;
+}
+
 #header
 {
 	/*background-image: url("http://il2.picdn.net/shutterstock/videos/5345468/thumb/1.jpg?i10c=img.resize(height:160)");*/

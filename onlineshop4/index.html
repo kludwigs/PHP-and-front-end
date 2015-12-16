@@ -5,6 +5,7 @@
 	<link rel='stylesheet' type='text/css' href='./mystyles.css' />	
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>
     <script>
       var productApp = angular.module('productApp', ['ngRoute']);
 
@@ -19,6 +20,11 @@
 		  {
             templateUrl: 'view_cart.html',
             controller: 'ProductDetailCtrl'
+          }).	
+          when('/checkout', 
+		  {
+            templateUrl: 'checkout.html',
+            controller: 'ProductDetailCtrl'
           }).		  
           when('/:productName', 
 		  {
@@ -30,11 +36,55 @@
           });
       });
 	  
+	productApp.factory('shoppingcartSessionStorage', function () 
+	{	
+		var service =
+		{
+			Set:function(items)
+			{
+				console.log("setting shoppingcart 2");
+				
+				shoppingdata = items;	
+										
+				sessionStorage.shopping_cart = JSON.stringify(shoppingdata);
+				//sessionStorage.shopping_cart = shoppingdata;
+				
+				console.log(sessionStorage.shopping_cart);					
+				
+				console.log("-------------");
+				
+			},
+			Get:function()			
+			{
+					if(sessionStorage.shopping_cart != null)
+					{
+						//console.log("session data available setting shopping data");
+						//console.log(sessionStorage.shopping_cart);
+						//console.log(sessionStorage.shopping_cart.length);
+						//console.log("------------------");
+						console.log("sessionStorage not empty");
+						console.log(sessionStorage.shopping_cart);
+						shoppingdata = JSON.parse(sessionStorage.shopping_cart);
+						return shoppingdata;
+					}
+					console.log("nothing in sessionStorage initializes as empty JSON");
+					return [];					
+			},
+			Clear:function()
+			{
+				sessionStorage.shopping_cart = null;
+				shoppingdata = [];
+			}
+			
+		}
+		var shoppingdata = [];//sessionStorage.shopping_cart;
+		
+		return service;		
+	});	  	  	  
 	
 	productApp.factory('shoppingcart', function () 
 	{	
-		return [];		
-				
+		return [];					
 	});
 	  	  
 	productApp.factory('products', function($http)
@@ -95,13 +145,10 @@
 		productApp.controller('ProductListCtrl', function ($scope, products, shoppingcart)
 		{
 			products.list(function(products) 
-			{
-			
-			//console.log("product list", products);
-				$scope.products = products.data;
-			  
-			});
-			
+			{			
+				//console.log("product list", products);
+				$scope.products = products.data;			  
+			});			
 			$scope.shoppingcart = shoppingcart;
 			/*
 			$scope.removeFromCart = function(myitem)
@@ -114,47 +161,54 @@
 			*/
 		  });
 
-      productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products, shoppingcart)
-	  {
+      productApp.controller('ProductDetailCtrl', function ($scope, $routeParams, products, shoppingcart, shoppingcartSessionStorage)
+	  {	
+		//shoppingcartSessionStorage.Clear();
+	  
+		var x = shoppingcartSessionStorage.Get();
+		console.log("top of controller session get -- ", x);
+
+				
+		if(x != null)
+		{
+			console.log("shoppingcart data received - set it to scope");								
+			shoppingcart = x;				
+			console.log("received data in init -" , shoppingcart);			
+		}
+		// else shouldn't happen
+		else
+		{
+			console.log("shopping cart initialized as null");				
+		}
+		$scope.shoppingcart = shoppingcart;
+		
+		/* utility variables */
+		$scope.options = [1, 2, 3, 4, 5];								
+		$scope.itemmessage = "";
+		$scope.updatemessage = "";		
+		
         products.find($routeParams.productName, function(product) 
 		{
-		  //console.log("product detail controller ", product);
           $scope.product = product;
-        });
-		$scope.options = [1, 2, 3, 4, 5];
-		$scope.shoppingcart = shoppingcart;		
-		//$scope.shoppingcart_localstorage = shoppingcart_localstorage.get();
-					
-		$scope.itemmessage = "";
-				
-		$scope.$watch('shoppingcart', function(shoppingcart) 
-		{
-			console.log( "Shopping cart is being watched" );
-			/*
-			if(shopping_cart == null)
-			{
-				console.log("shopping cart is null");				
-			}
-			sessionstorage['shoppingcart'] = $shopping_cart;
-			
-			return;
-			*/
-		},true);		
+        });								
 				
 		$scope.addToCart = function(myval)
 		{			
 			console.log("addToCart " + $scope.product.name );
 			
-			for(var i = 0; i<shoppingcart.length;i++)
+			if(shoppingcart !=null)
 			{
-				console.log("shoppingcart[",i,"].product " + shoppingcart[i].product);
-				
-				if(shoppingcart[i].product == $scope.product.name)
+				for(var i = 0; i<shoppingcart.length;i++)
 				{
-					//console.log("Item Already in Cart");
-					$scope.itemmessage = "Item Already in Cart!";
-					return;
-				}
+					console.log("shoppingcart[",i,"].product " + shoppingcart[i].product);
+					
+					if(shoppingcart[i].product == $scope.product.name)
+					{
+						//console.log("Item Already in Cart");
+						$scope.itemmessage = "Item Already in Cart!";
+						return;
+					}
+				}	
 			}			
 			shoppingcart.push(			
 			{
@@ -163,23 +217,76 @@
 				"price":$scope.product.price, 
 				"quantity":myval}
 			);
+			console.log("add to cart");
+			console.log(shoppingcart);
 			
 			
-			//shoppingcart_localstorage.set($scope.product, myval);			
+			shoppingcartSessionStorage.Set(shoppingcart);
 			
+			//var x = shoppingcartSessionStorage.Get();			
+			//console.log("after setting cart print what's in it");
+			//console.log(x);
 			//console.log("add item to cart", product);
 			//shoppingcart.set(product, myval);
 			
 			$scope.itemmessage = "Item Added to Cart";
+		}
+		$scope.updateCart = function()
+		{	
+			var x = shoppingcartSessionStorage.Get();
+			
+			try
+			{
+				x = JSON.parse(x);
+			}
+			catch(err)
+			{
+				;
+			}
+			console.log("update cart -- ", x);
+			var haschanged = false;
+			for(var i = 0; i <$scope.shoppingcart.length; i++)
+			{
+				console.log($scope.shoppingcart[i].quantity , "  == ", x[i].quantity);
+			
+				if($scope.shoppingcart[i].quantity != x[i].quantity)
+				{					
+					haschanged = true;
+					break;
+				}
+			}
+			if(haschanged)
+			{			
+				$scope.updatemessage = "Refreshed Cart!";	
+				shoppingcartSessionStorage.Set(shoppingcart);
+			}
+			else
+				$scope.updatemessage = "No changes made";	
+			$scope.itemmessage = "";	
+			
 		}
 		
 		$scope.removeFromCart = function(myitem)
 		{			
 			var index = shoppingcart.indexOf(myitem);
 			console.log("removing from", index ," index in cart");
-			shoppingcart.splice(index, 1);  
-			$scope.itemmessage = "";			
-		}			
+			$scope.shoppingcart.splice(index, 1);  
+			$scope.itemmessage = "";
+			$scope.updatemessage = "";				
+
+			shoppingcartSessionStorage.Set($scope.shoppingcart);			
+		}
+		$scope.calculateTotal = function()
+		{
+			var total = 0;
+			for(var i = 0; i <$scope.shoppingcart.length; i++)
+			{
+				total += ($scope.shoppingcart[i].price * $scope.shoppingcart[i].quantity);
+			}
+		
+			console.log("calculate total == ", total);
+			return total;
+		}				
       });
 
       productApp.filter('encodeURI', function()

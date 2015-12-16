@@ -1,0 +1,25 @@
+<a href="#">Back To Main</a>
+
+<h3 class="shopingcartheader" ng-hide="shoppingcart.length"> Your cart is empty</h3>
+
+
+<h2 class="checkoutheader" ng-hide="!shoppingcart.length"> Check Out</h2>
+
+<table ng-hide="!shoppingcart.length">
+	<tr>
+		<th class="long-column">Product</th>
+		<th class="short-column">Category</th>
+		<th class="short-column">Price</th>
+		<th>Quantity</th>
+	<tr>
+	</tr>
+	<tr ng-repeat="item in shoppingcart">
+		<td>{{item.product}}</td>
+		<td>{{item.category}}</td>
+		<td>{{item.price | currency}}</td>
+		<td>{{item.quantity}}</td>
+	</tr>	
+</tr>
+
+</table>
+<h3> Total _______________ {{calculateTotal() | currency}}</h3>

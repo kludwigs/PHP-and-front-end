@@ -1,18 +1,7 @@
 <a href="#">Back To Main</a>
 
-<h2>{{product.name}}</h2>
-<ul>
-  <li>Category: {{product.category }}</li>
-  <li>Price: {{product.price | currency}}</li>
-  <li>Description: {{product.description}}</li>
-</ul>
-<button ng-click="addToCart(myselect)">Add to Cart</button>  
-<select 
-	ng-init="myselect=options[0]"
-	ng-model="myselect" 
-	ng-options="o as o for o in options">
-</select>
-<span class="messagetext">{{itemmessage}}</span>
+
+<h3 class="shopingcartheader" ng-hide="shoppingcart.length"> Your cart is empty</h3>
 
 <!------------------Shopping Cart ----------------->
 
@@ -51,3 +40,4 @@
 <br><a href="#/checkout">Checkout </a>
 
 </div>
+
